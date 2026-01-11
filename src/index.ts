@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { AppDataSource } from "./data-source";
+import { DatabaseConnection } from "./database-connection";
 import { User } from "./entity/User";
 import { Caption } from "./entity/Caption";
 import { Image } from "./entity/Image";
@@ -17,10 +18,13 @@ app.use(express.json()); // for API requests
 app.use(express.urlencoded({ extended: true })); // for HTML form submissions
 app.use(express.static(path.join(__dirname, "../public"))); // serves static files from the public directory
 
-// Initialize database
-AppDataSource.initialize() // connects to db using config from data-source.ts
-  .then(async () => {
-    console.log("Database connection established");
+// Initialize database and start server
+const dbConnection = new DatabaseConnection();
+
+async function startServer() {
+  try {
+    // Initialize database connection
+    await dbConnection.init();
 
     // View Routes
 
@@ -221,8 +225,24 @@ AppDataSource.initialize() // connects to db using config from data-source.ts
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
-  })
-  .catch((error) => {
-    console.error("Error connecting to database:", error);
+  } catch (error) {
+    console.error("Error starting server:", error);
+    await dbConnection.close();
     process.exit(1);
-  });
+  }
+}
+
+// Handle graceful shutdown
+process.on("SIGINT", async () => {
+  console.log("\nShutting down gracefully...");
+  await dbConnection.close();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("\nShutting down gracefully...");
+  await dbConnection.close();
+  process.exit(0);
+});
+
+startServer();
