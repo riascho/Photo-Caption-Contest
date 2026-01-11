@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image #<%= image.id %> - Photo Caption Contest</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><a href="/">Photo Caption Contest</a></h1>
+            <p>View images and submit your funniest captions!</p>
+        </header>
+
+        <main>
+            <nav class="breadcrumb">
+                <a href="/">Home</a> / Image #<%= image.id %>
+            </nav>
+
+            <div class="single-image">
+                <img src="<%= image.url %>" alt="Contest image <%= image.id %>">
+            </div>
+
+            <section class="captions-section">
+                <h2>Captions (<%= image.captions ? image.captions.length : 0 %>)</h2>
+
+                <% if (image.captions && image.captions.length > 0) { %>
+                    <ul class="captions-list">
+                        <% image.captions.forEach(function(caption) { %>
+                            <li class="caption-item">
+                                <div class="caption-text">"<%= caption.text %>"</div>
+                                <div class="caption-author">
+                                    - <%= caption.user ? caption.user.userName : 'Anonymous' %>
+                                </div>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p class="no-captions">No captions yet. Be the first to add one!</p>
+                <% } %>
+            </section>
+
+            <section class="submit-section">
+                <h2>Submit Your Caption</h2>
+                <form method="POST" action="/images/<%= image.id %>/captions" class="caption-form">
+                    <div class="form-group">
+                        <label for="userId">User ID:</label>
+                        <input
+                            type="number"
+                            id="userId"
+                            name="userId"
+                            required
+                            min="1"
+                            placeholder="Enter your user ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="text">Your Caption:</label>
+                        <textarea
+                            id="text"
+                            name="text"
+                            required
+                            placeholder="Enter your funny caption..."
+                            rows="3"></textarea>
+                    </div>
+
+                    <button type="submit">Submit Caption</button>
+                </form>
+            </section>
+
+            <div class="back-link">
+                <a href="/">&larr; Back to all images</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Photo Caption Contest</p>
+        </footer>
+    </div>
+</body>
+</html>
