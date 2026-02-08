@@ -1,0 +1,40 @@
+<% title = 'Login - Photo Caption Contest' %>
+
+<nav class="breadcrumb">
+    <a href="/">Home</a> / Login
+</nav>
+
+<section class="submit-section">
+    <h2>Welcome Back!</h2>
+    <p>Log in to continue sharing your funniest captions.</p>
+
+    <form method="POST" action="/login" class="caption-form">
+        <div class="form-group">
+            <label for="userName">Username:</label>
+            <input
+                type="text"
+                id="userName"
+                name="userName"
+                required
+                placeholder="Enter your username">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="Enter your password">
+        </div>
+
+        <button type="submit">Log In</button>
+    </form>
+
+    <p class="form-note">Don't have an account? <a href="/register">Register here</a></p>
+</section>
+
+<div class="back-link">
+    <a href="/">&larr; Back to home</a>
+</div>

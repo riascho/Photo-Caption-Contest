@@ -1,62 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Caption Contest</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Photo Caption Contest</h1>
-            <p>View images and submit your funniest captions!</p>
-        </header>
-
-        <main>
-            <% if (images.length === 0) { %>
-                <div class="empty-state">
-                    <p>No images available yet. Add some images to the database to get started!</p>
-                </div>
-            <% } else { %>
-                <div class="images-grid">
-                    <% images.forEach(function(image) { %>
-                        <div class="image-card">
-                            <a href="/images/<%= image.id %>">
-                                <img src="<%= image.url %>" alt="Contest image <%= image.id %>">
-                            </a>
-                            <div class="image-info">
-                                <h3><a href="/images/<%= image.id %>">Image #<%= image.id %></a></h3>
-                                <p class="caption-count">
-                                    <%= image.captions ? image.captions.length : 0 %>
-                                    <%= image.captions && image.captions.length === 1 ? 'caption' : 'captions' %>
-                                </p>
-
-                                <% if (image.captions && image.captions.length > 0) { %>
-                                    <div class="preview-captions">
-                                        <% image.captions.slice(0, 2).forEach(function(caption) { %>
-                                            <div class="caption-preview">
-                                                "<%= caption.text %>"
-                                                <span class="caption-author">- <%= caption.user ? caption.user.userName : 'Anonymous' %></span>
-                                            </div>
-                                        <% }); %>
-                                        <% if (image.captions.length > 2) { %>
-                                            <a href="/images/<%= image.id %>" class="view-more">View all <%= image.captions.length %> captions</a>
-                                        <% } %>
-                                    </div>
-                                <% } else { %>
-                                    <p class="no-captions">No captions yet. Be the first!</p>
-                                <% } %>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            <% } %>
-        </main>
-
-        <footer>
-            <p>&copy; 2026 Photo Caption Contest</p>
-        </footer>
+<% if (images.length === 0) { %>
+    <div class="empty-state">
+        <p>No images available yet. Add some images to the database to get started!</p>
     </div>
-</body>
-</html>
+<% } else { %>
+    <div class="images-grid">
+        <% images.forEach(function(image) { %>
+            <div class="image-card">
+                <a href="/images/<%= image.id %>">
+                    <img src="<%= image.url %>" alt="Contest image <%= image.id %>">
+                </a>
+                <div class="image-info">
+                    <h3><a href="/images/<%= image.id %>">Image #<%= image.id %></a></h3>
+                    <p class="caption-count">
+                        <%= image.captions ? image.captions.length : 0 %>
+                        <%= image.captions && image.captions.length === 1 ? 'caption' : 'captions' %>
+                    </p>
+
+                    <% if (image.captions && image.captions.length > 0) { %>
+                        <div class="preview-captions">
+                            <% image.captions.slice(0, 2).forEach(function(caption) { %>
+                                <div class="caption-preview">
+                                    "<%= caption.text %>"
+                                    <span class="caption-author">- <%= caption.user ? caption.user.userName : 'Anonymous' %></span>
+                                </div>
+                            <% }); %>
+                            <% if (image.captions.length > 2) { %>
+                                <a href="/images/<%= image.id %>" class="view-more">View all <%= image.captions.length %> captions</a>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <p class="no-captions">No captions yet. Be the first!</p>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+<% } %>

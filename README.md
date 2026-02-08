@@ -2,13 +2,15 @@
 
 [Project Link](https://www.codecademy.com/journeys/back-end-engineer/paths/becj-22-security-infrastructure-scalibility/tracks/becj-22-portfolio-project-photo-caption-contest/modules/becp-22-photo-caption-contest-e59b30e6-216a-4b4e-8618-38b2556b8522/kanban_projects/ext-proj-caption-contest)
 
+I adapted the project to use `Typescript` and `Typeorm`.
+
 ## Overview
 
-In this project you will create the backend for a platform for users to participate in a photo caption contest. Your server will host a few images and you will create endpoints to authenticate and authorize users. In order for a user to create a caption, they will need to be authenticated (signed in). You will need a database design and schema in order to integrate a database layer to store all your users and captions. You will use PostgreSQL and Typeorm ORM to communicate between your database and your server. As you create your endpoints you will be testing them on Postman to ensure that they work correctly. Once the server is running, you will use a localized cache to optimize the performance of frequently requested data. Finally, you will write the documentation using Swagger and deploy your project to Render.
+In this project I created the backend for a platform where users can participate in a photo caption contest. My server hosts several images and I built endpoints to authenticate and authorize users. Users need to be authenticated (signed in) in order to create captions. I developed a database design and schema to integrate a database layer for storing all users and captions. I used PostgreSQL and Typeorm ORM to communicate between my database and server. As I created my endpoints, I tested them using Postman to ensure they worked correctly. Once the server was running, I implemented a localized cache to optimize the performance of frequently requested data. Finally, I wrote the documentation using Swagger and deployed my project to Render.
 
-### Required Tools & Frameworks
+### Tools & Frameworks I Used
 
-- **Express Framework**: For creating a robust API. If you need help setting up the framework, take a look at the step by step instructions [here](https://expressjs.com/en/starter/installing.html).
+- **Express Framework**: For creating a robust API
 - **Swagger**: For API documentation
 - **PostgreSQL**: As the database system
 - **Typeorm ORM**: For database communication
@@ -16,12 +18,12 @@ In this project you will create the backend for a platform for users to particip
 
 ## Project Objectives
 
-- Use Git version control
-- Create documentation using the Swagger API
-- Implement a database
-- Integrate existing API endpoints with the database layer
-- Database implementation for transactions
-- Deploy the application using Render
+- Used Git version control
+- Created documentation using the Swagger API
+- Implemented a database
+- Integrated existing API endpoints with the database layer
+- Implemented database transactions
+- Deployed the application using Render
 
 ## Prerequisites
 
@@ -39,100 +41,124 @@ In this project you will create the backend for a platform for users to particip
 
 ### ✅ Step 1 - Plan your project
 
-Visualize your end result. What is it built with? What can it do? Make sure that it satisfies all of the project objectives.
+I started by visualizing my end result - what it would be built with and what it could do. I made sure it satisfied all of the project objectives.
 
-Make a timeline for yourself and avoid the temptation to build things that aren't required. Setting firm boundaries and deadlines will keep you on track and prevent scope creep.
-
-The following tasks will help you identify natural break points.
+I created a timeline for myself and avoided the temptation to build things that weren't required. Setting firm boundaries and deadlines helped me stay on track and prevent scope creep.
 
 ### ✅ Step 2 - Configure Typeorm and create your database
 
-> Following the documentation here: https://typeorm.io/docs/getting-started
+I followed the documentation here: https://typeorm.io/docs/getting-started
 
 ### ✅ Step 3 - Create your model(s)
 
-Remember to keep images in consideration when creating your models and to add all the necessary attributes. Once the commands are run, new folders and files will be generated in your project. Take a look inside them and examine how the code was updated.
+I kept images in consideration when creating my models and added all the necessary attributes. Once I ran the commands, new folders and files were generated in my project, which I examined to see how the code was updated.
 
 ### ✅ Step 4 - Add images to your server
 
-Add 4-6 images that will be captioned in your server.
+I added 4-6 images to my server that would be captioned.
 
-Keep in mind your project's architecture and where you will store these images. In the future, you might consider hosting the images in a cloud service for scalability, like AWS for example.
+I kept in mind my project's architecture and where I would store these images. In the future, I might consider hosting the images in a cloud service for scalability, like AWS.
 
 ### ✅ Step 5 - Run migrations
 
-If you need to update your models or change any associations you can always re-run migrations to implement the changes. This is done automatically with Typeorm's `synchronize: true,` configuration. However, for production purposes, it is encouraged to be done manually and with versioning.
+I learned that if I need to update my models or change any associations, I can always re-run migrations to implement the changes. This is done automatically with Typeorm's `synchronize: true,` configuration. However, for production purposes, it's encouraged to be done manually and with versioning.
 
 ### ✅ Step 6 - Create endpoints for images and captions
 
-Create the following endpoints:
+I created the following endpoints:
 
-- An endpoint to retrieve all images.
-- An endpoint to retrieve an image by ID (this should include the images' captions and other information).
-- An endpoint to add captions to a specific image.
+- An endpoint to retrieve all images
+- An endpoint to retrieve an image by ID (includes the images' captions and other information)
+- An endpoint to add captions to a specific image
 
-Think about your project structure and where you should place route controllers depending on their purpose.
+I thought carefully about my project structure and where to place route controllers depending on their purpose.
 
 ### ✅ Step 7 - Test your endpoints
 
-Use Postman to check that your endpoints work accordingly.
+I used Postman to check that my endpoints worked accordingly.
 
-You might need to manually add an image with attached captions to your server in order to check whether this data can be retrieved when testing the endpoints.
+I manually added an image with attached captions to my server to verify that this data could be retrieved when testing the endpoints.
 
-### Step 8 - Create authentication endpoints
+### ✅ Step 8 - Create authentication endpoints
 
-Use the library bcrypt and create registration, login, and logout endpoints.
+I used the library bcrypt to create registration, login, and logout endpoints.
 
-1. Create a hash from the users registration password and store it in the database.
-2. When a user logs in, compare the password to the one stored in the database for authentication.
-3. Make sure you're able to create a user session.
+1. Created a hash from the users' registration password and stored it in the database
+2. When a user logs in, I compared the password to the one stored in the database for authentication
+3. Made sure I was able to create a user session
 
-If you need help using bcrypt, make sure to look at their [documentation](https://www.npmjs.com/package/bcrypt).
+I referred to the bcrypt [documentation](https://www.npmjs.com/package/bcrypt) when I needed help.
 
 ### Step 9 - Add authorization middleware to specific endpoints
 
-Only authorized users will be able to add captions to images. Create middleware and add it to the appropriate endpoints in order for signed-in users to add captions to specific images.
+I designed the system so that only authorized users would be able to add captions to images. I created middleware and added it to the appropriate endpoints so that signed-in users could add captions to specific images.
 
-You can use a session in order to verify if a user is logged in.
+I used a session to verify if a user is logged in.
 
-Make sure to redirect users and use appropriate status codes when unauthorized users try to access these endpoints.
+I made sure to redirect users and use appropriate status codes when unauthorized users try to access these endpoints.
 
 ### Step 10 - Test your authorization endpoints
 
-Use Postman to check all of your endpoints.
+I used Postman to check all of my endpoints.
 
-Remember to make use of the Headers and Body tabs that Postman provides in order to check your authentication endpoints.
+I made use of the Headers and Body tabs that Postman provides to check my authentication endpoints.
 
 ### Step 11 - Configure localized caching
 
-Add the [node-cache](https://www.npmjs.com/package/node-cache) package and create a localized cache for the images whenever they're being retrieved.
+I added the [node-cache](https://www.npmjs.com/package/node-cache) package and created a localized cache for the images whenever they're being retrieved.
 
-There are a few ways to do this:
+I considered a few approaches:
 
-- Create a middleware that can be added to certain endpoints
-- Set the duration of your cache content to however long you see fit
+- Creating a middleware that can be added to certain endpoints
+- Setting the duration of my cache content to however long I saw fit
 
-This step should optimize the performance of retrieving all images, and images with captions.
+This step optimized the performance of retrieving all images, and images with captions.
 
-Alternatively, you can use [Redis](https://redis.io/) as an in-memory data structure store for caching.
+Alternatively, I could have used [Redis](https://redis.io/) as an in-memory data structure store for caching.
 
 ### Step 12 - Write up documentation using Swagger
 
-Using Swagger, create documentation for your API.
+I used Swagger to create documentation for my API.
 
-Try to be as descriptive as possible and give examples of what your data should look like. Good documentation should read as a manual for end users so be sure to write it in a specific, concise, and relevant way.
+I tried to be as descriptive as possible and gave examples of what the data should look like. I wrote it as a manual for end users, making sure it was specific, concise, and relevant.
 
 ### Step 13 - Deploy your application with Render
 
-1. Push your local changes to your remote GitHub repository
-2. Deploy your application using Render
+1. I pushed my local changes to my remote GitHub repository
+2. I deployed my application using Render
 
-If you need a refresher on how to do this, take a look at the [Render documentation](https://render.com/docs).
+I referred to the [Render documentation](https://render.com/docs) when I needed a refresher.
 
 ### Step 14 - Next steps
 
-You're welcome to expand this project beyond the required features. If you feel like challenging yourself further you could:
+I could expand this project beyond the required features. If I want to challenge myself further, I could:
 
 - Create a web app that displays photos, captions, and allows users to register and submit captions
-- Create a Docker container to run and deploy your project
+- Create a Docker container to run and deploy the project
 - Design and implement a voting mechanism for ranking caption submissions
+
+## Setup
+
+1. Set up `.env` file with your database config:
+
+- USERNAME
+- PASSWORD
+- DATABASE
+
+2. Install all dependencies
+
+```bash
+npm install
+```
+
+3. Build the app
+
+```bash
+npm run build
+```
+
+4. Start the app
+
+```bash
+npm start
+```

@@ -1,0 +1,64 @@
+<% title = 'Register - Photo Caption Contest' %>
+
+<nav class="breadcrumb">
+    <a href="/">Home</a> / Register
+</nav>
+
+<section class="submit-section">
+    <h2>Create Your Account</h2>
+    <p>Join the Photo Caption Contest community and start sharing your funniest captions!</p>
+
+    <form method="POST" action="/register" class="caption-form">
+        <div class="form-group">
+            <label for="userName">Username:</label>
+            <input
+                type="text"
+                id="userName"
+                name="userName"
+                required
+                minlength="3"
+                maxlength="50"
+                placeholder="Choose a unique username">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="your.email@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                minlength="6"
+                placeholder="At least 6 characters">
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+                minlength="6"
+                placeholder="Re-enter your password">
+        </div>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p class="form-note">Already have an account? <a href="/login">Log in here</a></p>
+</section>
+
+<div class="back-link">
+    <a href="/">&larr; Back to home</a>
+</div>

@@ -1,25 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= typeof title !== 'undefined' ? title : 'Photo Caption Contest' %></title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <%= typeof title !== 'undefined' ? title : 'Photo Caption Contest' %>
+    </title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <header>
+      <header>
+        <div class="header-content">
+          <div class="header-text">
             <h1><a href="/">Photo Caption Contest</a></h1>
             <p>View images and submit your funniest captions!</p>
-        </header>
+          </div>
+          <nav class="auth-nav">
+            <% if (typeof userId !== 'undefined' && userId) {%>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-login">Logout</button>
+                </form>
+            <% } else { %>
+                <a href="/login" class="btn btn-login">Login</a>
+                <a href="/register" class="btn btn-register">Register</a>
+            <% } %>
+        </nav>
+        </div>
+      </header>
 
-        <main>
-            <%- body %>
-        </main>
+      <main><%- body %></main>
 
-        <footer>
-            <p>&copy; 2026 Photo Caption Contest</p>
-        </footer>
+      <footer>
+        <p>&copy; 2026 Photo Caption Contest</p>
+      </footer>
     </div>
-</body>
+  </body>
 </html>
