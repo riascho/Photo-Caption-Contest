@@ -14,10 +14,10 @@ export class User {
   @PrimaryGeneratedColumn({ type: "integer", name: "id" })
   id!: number;
 
-  @Column("text", { name: "email", unique: true })
+  @Column("text", { name: "email", unique: true, select: false })
   email!: string;
 
-  @Column("text", { name: "password" })
+  @Column("text", { name: "password", select: false })
   password!: string;
 
   @Column("text", { name: "userName", unique: true })

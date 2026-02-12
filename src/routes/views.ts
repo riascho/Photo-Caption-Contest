@@ -35,10 +35,7 @@ viewsRouter.get("/", async (req, res) => {
             // ... more images
           ]
          */
-    res.render("index", {
-      images,
-      userId: req.session.userId,
-    }); // EJS template renders
+    res.status(200).render("index", { images }); // EJS template renders
   } catch (error) {
     console.error("Error fetching images:", error);
     res.status(500).render("error", {
@@ -47,7 +44,6 @@ viewsRouter.get("/", async (req, res) => {
   }
 });
 
-// Single image page
 viewsRouter.get("/images/:id", async (req, res) => {
   try {
     const image = await imageRepository.findOne({
@@ -61,7 +57,7 @@ viewsRouter.get("/images/:id", async (req, res) => {
       });
     }
 
-    res.render("image", { image });
+    res.status(200).render("image", { image });
   } catch (error) {
     console.error("Error fetching image:", error);
     res.status(500).render("error", {
@@ -70,15 +66,14 @@ viewsRouter.get("/images/:id", async (req, res) => {
   }
 });
 
-// Submit caption (form submission)
 viewsRouter.post("/images/:id/captions", async (req, res) => {
   try {
-    const { text, userId } = req.body;
+    const { text } = req.body;
+    const userId = req.session.userId;
+    console.log(text, "\n", userId);
 
-    if (!text || !userId) {
-      return res.status(400).render("error", {
-        message: "Caption text and user ID are required",
-      });
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - please log in" });
     }
 
     const image = await imageRepository.findOne({
@@ -92,7 +87,7 @@ viewsRouter.post("/images/:id/captions", async (req, res) => {
     }
 
     const user = await userRepository.findOne({
-      where: { id: parseInt(userId) },
+      where: { id: userId },
     });
 
     if (!user) {

@@ -49,6 +49,13 @@ declare module "express-session" {
   }
 }
 
+// Middleware to make session data available to all routes (via express response object)
+app.use((req, res, next) => {
+  res.locals.userId = req.session.userId;
+  res.locals.userName = req.session.userName;
+  next();
+});
+
 // Import routes
 app.use("/", viewsRouter);
 app.use("/api", apiRouter);

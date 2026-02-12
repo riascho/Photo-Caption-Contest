@@ -89,7 +89,7 @@ I used the library bcrypt to create registration, login, and logout endpoints.
 
 I referred to the bcrypt [documentation](https://www.npmjs.com/package/bcrypt) when I needed help.
 
-### Step 9 - Add authorization middleware to specific endpoints
+### ✅ Step 9 - Add authorization middleware to specific endpoints
 
 I designed the system so that only authorized users would be able to add captions to images. I created middleware and added it to the appropriate endpoints so that signed-in users could add captions to specific images.
 

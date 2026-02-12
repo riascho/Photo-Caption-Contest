@@ -10,23 +10,20 @@ export const apiRouter = Router();
 
 // API ROUTES
 
-// TODO: when user is logged in => req.session.userId === user.id => show user specific content
-
 // Get all images
-apiRouter.get("/api/images", async (req, res) => {
+apiRouter.get("/images", async (req, res) => {
   try {
     const images = await imageRepository.find({
       relations: ["captions", "captions.user"],
     });
-    res.json(images);
+    res.status(200).json(images);
   } catch (error) {
     console.error("Error fetching images:", error);
     res.status(500).json({ error: "Failed to fetch images" });
   }
 });
 
-// Get a single image with its captions
-apiRouter.get("/api/images/:id", async (req, res) => {
+apiRouter.get("/images/:id", async (req, res) => {
   try {
     const image = await imageRepository.findOne({
       where: { id: parseInt(req.params.id) },
@@ -37,24 +34,23 @@ apiRouter.get("/api/images/:id", async (req, res) => {
       return res.status(404).json({ error: "Image not found" });
     }
 
-    res.json(image);
+    res.status(200).json(image);
   } catch (error) {
     console.error("Error fetching image:", error);
     res.status(500).json({ error: "Failed to fetch image" });
   }
 });
 
-// Submit a caption for an image
-// TODO: this should be protected route - only logged in users can submit captions => check req.session.userId
-apiRouter.post("/api/images/:id/captions", async (req, res) => {
-  console.log("submitted caption:", req.session);
+apiRouter.post("/images/:id/captions", async (req, res) => {
+  // check if auth headers are sent
+  // if () {
   try {
-    const { text } = req.body;
-    const userId = req.session.userId;
-    console.log(text, "\n", userId);
-
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized - please log in" });
+    const { text, userId } = req.body;
+    // TODO: userId should not come in body! Security Risk!
+    if (!text || !userId) {
+      return res
+        .status(400)
+        .json({ error: "Caption text and user ID are required" });
     }
 
     const image = await imageRepository.findOne({
@@ -86,4 +82,7 @@ apiRouter.post("/api/images/:id/captions", async (req, res) => {
     console.error("Error creating caption:", error);
     res.status(500).json({ error: "Failed to create caption" });
   }
+  // } else {
+  res.status(401).json({ error: "Unauthorized - please log in" });
+  // }
 });

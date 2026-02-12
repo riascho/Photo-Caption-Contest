@@ -11,7 +11,7 @@ export const authRouter = Router();
 
 // Registration
 authRouter.get("/register", (_req, res) => {
-  res.render("registration");
+  res.status(200).render("registration");
 });
 
 authRouter.post("/register", async (req, res) => {
@@ -41,19 +41,19 @@ authRouter.post("/register", async (req, res) => {
 
 // Login
 authRouter.get("/login", async (_req, res) => {
-  res.render("login");
+  res.status(200).render("login");
 });
-authRouter.post("/login", async (req, res, next) => {
+authRouter.post("/login", async (req, res) => {
   try {
     const { userName, password } = req.body;
     const user = await userRepository.findOne({
       where: { userName },
+      select: ["id", "userName", "password"], // only select fields we need
     });
     if (user && (await compareHash(password, user?.password))) {
       // store session
       req.session.userId = user.id;
       req.session.userName = user.userName;
-      console.log("Logged in:", req.session);
       res.redirect("/");
     } else {
       res.status(401).render("error", {
@@ -71,7 +71,6 @@ authRouter.post("/login", async (req, res, next) => {
 // Logout
 authRouter.post("/logout", async (req, res) => {
   // clear session
-  console.log(`User ${req.session.userName} logged out`);
   req.session.destroy((err) => {
     if (err) {
       console.error("Error during logout:", err);
