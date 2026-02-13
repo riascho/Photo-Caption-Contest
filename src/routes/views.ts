@@ -70,7 +70,6 @@ viewsRouter.post("/images/:id/captions", async (req, res) => {
   try {
     const { text } = req.body;
     const userId = req.session.userId;
-    console.log(text, "\n", userId);
 
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized - please log in" });

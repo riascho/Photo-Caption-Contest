@@ -42,15 +42,16 @@ apiRouter.get("/images/:id", async (req, res) => {
 });
 
 apiRouter.post("/images/:id/captions", async (req, res) => {
-  // check if auth headers are sent
-  // if () {
   try {
-    const { text, userId } = req.body;
-    // TODO: userId should not come in body! Security Risk!
-    if (!text || !userId) {
-      return res
-        .status(400)
-        .json({ error: "Caption text and user ID are required" });
+    const { text } = req.body;
+    const userId = req.session.userId;
+
+    if (!text) {
+      return res.status(400).json({ error: "Caption text is required" });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - please log in" });
     }
 
     const image = await imageRepository.findOne({
@@ -82,7 +83,4 @@ apiRouter.post("/images/:id/captions", async (req, res) => {
     console.error("Error creating caption:", error);
     res.status(500).json({ error: "Failed to create caption" });
   }
-  // } else {
-  res.status(401).json({ error: "Unauthorized - please log in" });
-  // }
 });

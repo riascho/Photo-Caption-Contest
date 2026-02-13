@@ -97,7 +97,7 @@ I used a session to verify if a user is logged in.
 
 I made sure to redirect users and use appropriate status codes when unauthorized users try to access these endpoints.
 
-### Step 10 - Test your authorization endpoints
+### ✅ Step 10 - Test your authorization endpoints
 
 I used Postman to check all of my endpoints.
 
