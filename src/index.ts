@@ -4,9 +4,6 @@ import path from "path";
 import expressLayouts from "express-ejs-layouts";
 import { AppDataSource } from "./data-source";
 import { initializeRepositories } from "./repositories";
-import { User } from "./entity/User";
-import { Caption } from "./entity/Caption";
-import { Image } from "./entity/Image";
 import { viewsRouter } from "./routes/views";
 import { apiRouter } from "./routes/api";
 import { authRouter } from "./routes/auth";
@@ -21,6 +18,7 @@ app.use(expressLayouts); // enables layout support
 app.set("layout", "layout"); // sets layout.ejs as the default layout
 
 // Middleware
+
 app.use(express.json()); // for API requests
 app.use(express.urlencoded({ extended: true })); // for HTML form submissions
 app.use(express.static(path.join(__dirname, "../public"))); // serves static files from the public directory
@@ -51,6 +49,7 @@ declare module "express-session" {
 
 // Middleware to make session data available to all routes (via express response object)
 app.use((req, res, next) => {
+  // the res.locals object is available in all EJS templates, so we can use it to pass session data to the views
   res.locals.userId = req.session.userId;
   res.locals.userName = req.session.userName;
   next();
