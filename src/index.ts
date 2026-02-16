@@ -2,12 +2,14 @@ import express from "express";
 import session from "express-session";
 import path from "path";
 import expressLayouts from "express-ejs-layouts";
+import swaggerUi from "swagger-ui-express";
 import { AppDataSource } from "./data-source";
 import { initializeRepositories } from "./repositories";
 import { viewsRouter } from "./routes/views";
 import { apiRouter } from "./routes/api";
 import { authRouter } from "./routes/auth";
 import { seedImages } from "./seed";
+import { swaggerSpec } from "./swagger";
 
 const app = express(); // creating express app
 const PORT = process.env.PORT || 3000;
@@ -56,6 +58,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Swagger documentation route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Import routes
 app.use("/", viewsRouter);
 app.use("/api", apiRouter);
@@ -65,7 +70,6 @@ app.use("/", authRouter);
 AppDataSource.initialize() // connects to db using config from data-source.ts
   .then(async () => {
     initializeRepositories(AppDataSource); // initializes repositories with the connected data source
-    console.log("Database connection established");
 
     // seed initial images if db empty
     await seedImages();

@@ -103,7 +103,7 @@ I used Postman to check all of my endpoints.
 
 I made use of the Headers and Body tabs that Postman provides to check my authentication endpoints.
 
-### Step 11 - Configure localized caching
+### ✅ Step 11 - Configure localized caching
 
 I added the [node-cache](https://www.npmjs.com/package/node-cache) package and created a localized cache for the images whenever they're being retrieved.
 
@@ -116,7 +116,7 @@ This step optimized the performance of retrieving all images, and images with ca
 
 Alternatively, I could have used [Redis](https://redis.io/) as an in-memory data structure store for caching.
 
-### Step 12 - Write up documentation using Swagger
+### ✅ Step 12 - Write up documentation using Swagger
 
 I used Swagger to create documentation for my API.
 
