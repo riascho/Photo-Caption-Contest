@@ -7,6 +7,7 @@ import { initializeRepositories } from "./repositories";
 import { viewsRouter } from "./routes/views";
 import { apiRouter } from "./routes/api";
 import { authRouter } from "./routes/auth";
+import { seedImages } from "./seed";
 
 const app = express(); // creating express app
 const PORT = process.env.PORT || 3000;
@@ -65,6 +66,9 @@ AppDataSource.initialize() // connects to db using config from data-source.ts
   .then(async () => {
     initializeRepositories(AppDataSource); // initializes repositories with the connected data source
     console.log("Database connection established");
+
+    // seed initial images if db empty
+    await seedImages();
 
     // Start server
     app.listen(PORT, () => {
