@@ -7,6 +7,7 @@ import {
 } from "../repositories";
 import { dbCache } from "../cache";
 import { Router } from "express";
+import { validateAndSanitizeCaptionInput } from "../middleware/captionValidation";
 export const viewsRouter = Router();
 
 // VIEW ROUTES
@@ -42,7 +43,7 @@ viewsRouter.get("/images/:id", async (req, res) => {
       image = cachedData;
     } else {
       image = await imageRepository.findOne({
-        where: { id: parseInt(req.params.id) },
+        where: { id: Number(req.params?.id) },
         relations: ["captions", "captions.user"],
       });
       if (!image) {
@@ -61,52 +62,64 @@ viewsRouter.get("/images/:id", async (req, res) => {
   }
 });
 
-viewsRouter.post("/images/:id/captions", async (req, res) => {
-  try {
-    const { text } = req.body;
-    const userId = req.session.userId;
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized - please log in" });
-    }
+viewsRouter.post(
+  "/images/:id/captions",
+  validateAndSanitizeCaptionInput,
+  async (req, res) => {
+    try {
+      const { text } = req.body;
+      const userId = req.session.userId;
+      const imageId = Number(req.params?.id);
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized - please log in" });
+      }
 
-    const cachedData = dbCache.get(`image_${req.params.id}`);
-    let image;
-    if (cachedData) {
-      image = cachedData;
-    } else {
-      image = await imageRepository.findOne({
-        where: { id: parseInt(req.params.id) },
-      });
-      if (!image) {
-        return res.status(404).render("error", {
-          message: "Image not found",
+      if (!Number.isInteger(imageId) || imageId <= 0) {
+        return res.status(400).render("error", {
+          message: "Invalid image ID",
         });
       }
-      dbCache.set(`image_${req.params.id}`, image);
-    }
 
-    const user = await userRepository.findOne({
-      where: { id: userId },
-    });
-    if (!user) {
-      return res.status(404).render("error", {
-        message: "User not found",
+      const cacheKey = `image_${imageId}`;
+      const cachedData = dbCache.get(cacheKey);
+      let image;
+      if (cachedData) {
+        image = cachedData;
+      } else {
+        image = await imageRepository.findOne({
+          where: { id: imageId },
+        });
+        if (!image) {
+          return res.status(404).render("error", {
+            message: "Image not found",
+          });
+        }
+        dbCache.set(cacheKey, image);
+      }
+
+      const user = await userRepository.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        return res.status(404).render("error", {
+          message: "User not found",
+        });
+      }
+
+      const caption = captionRepository.create({
+        text,
+        user,
+        image,
+      });
+      await captionRepository.save(caption);
+      dbCache.del(cacheKey); // refresh cache for this image because we have a new caption to load
+      dbCache.del("images"); // refresh cache for the home page because we have a new caption to load
+      res.redirect(`/images/${imageId}`);
+    } catch (error) {
+      console.error("Error creating caption:", error);
+      res.status(500).render("error", {
+        message: "Failed to submit caption",
       });
     }
-
-    const caption = captionRepository.create({
-      text,
-      user,
-      image,
-    });
-    await captionRepository.save(caption);
-    dbCache.del(`image_${req.params.id}`); // refresh cache for this image because we have a new caption to load
-    dbCache.del("images"); // refresh cache for the home page because we have a new caption to load
-    res.redirect(`/images/${req.params.id}`);
-  } catch (error) {
-    console.error("Error creating caption:", error);
-    res.status(500).render("error", {
-      message: "Failed to submit caption",
-    });
-  }
-});
+  },
+);

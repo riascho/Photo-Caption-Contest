@@ -6,6 +6,7 @@ import {
   captionRepository,
 } from "../repositories";
 import { Router } from "express";
+import { validateAndSanitizeCaptionInput } from "../middleware/captionValidation";
 export const apiRouter = Router();
 
 // API ROUTES
@@ -26,7 +27,7 @@ apiRouter.get("/images", async (req, res) => {
 apiRouter.get("/images/:id", async (req, res) => {
   try {
     const image = await imageRepository.findOne({
-      where: { id: parseInt(req.params.id) },
+      where: { id: Number(req.params?.id) },
       relations: ["captions", "captions.user"],
     });
 
@@ -41,46 +42,51 @@ apiRouter.get("/images/:id", async (req, res) => {
   }
 });
 
-apiRouter.post("/images/:id/captions", async (req, res) => {
-  try {
-    const { text } = req.body;
-    const userId = req.session.userId;
+apiRouter.post(
+  "/images/:id/captions",
+  validateAndSanitizeCaptionInput,
+  async (req, res) => {
+    try {
+      const { text } = req.body;
+      const userId = req.session.userId;
+      const imageId = Number(req.params?.id);
 
-    if (!text) {
-      return res.status(400).json({ error: "Caption text is required" });
+      if (!userId) {
+        return res.status(401).json({ error: "Unauthorized - please log in" });
+      }
+
+      if (!Number.isInteger(imageId) || imageId <= 0) {
+        return res.status(400).json({ error: "Invalid image ID" });
+      }
+
+      const image = await imageRepository.findOne({
+        where: { id: imageId },
+      });
+
+      if (!image) {
+        return res.status(404).json({ error: "Image not found" });
+      }
+
+      const user = await userRepository.findOne({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const caption = captionRepository.create({
+        text,
+        user,
+        image,
+      });
+
+      await captionRepository.save(caption);
+
+      res.status(201).json(caption);
+    } catch (error) {
+      console.error("Error creating caption:", error);
+      res.status(500).json({ error: "Failed to create caption" });
     }
-
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized - please log in" });
-    }
-
-    const image = await imageRepository.findOne({
-      where: { id: parseInt(req.params.id) },
-    });
-
-    if (!image) {
-      return res.status(404).json({ error: "Image not found" });
-    }
-
-    const user = await userRepository.findOne({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const caption = captionRepository.create({
-      text,
-      user,
-      image,
-    });
-
-    await captionRepository.save(caption);
-
-    res.status(201).json(caption);
-  } catch (error) {
-    console.error("Error creating caption:", error);
-    res.status(500).json({ error: "Failed to create caption" });
-  }
-});
+  },
+);
