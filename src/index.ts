@@ -24,6 +24,20 @@ app.set("layout", "layout"); // sets layout.ejs as the default layout
 
 app.use(express.json()); // for API requests
 app.use(express.urlencoded({ extended: true })); // for HTML form submissions
+
+app.use((req, res, next) => {
+  // Keep Swagger UI usable while enforcing CSP everywhere else.
+  if (req.path.startsWith("/api-docs")) {
+    return next();
+  }
+
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+  );
+  next();
+});
+
 app.use(express.static(path.join(__dirname, "../public"))); // serves static files from the public directory
 
 // Session configuration
