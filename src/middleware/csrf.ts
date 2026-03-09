@@ -11,4 +11,7 @@ export const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
     secure: process.env.NODE_ENV === "production",
     path: "/",
   },
+  // The library default reads from req.headers["x-csrf-token"] (for AJAX/API use).
+  // HTML forms submit the token as a body field, so we read from req.body._csrf instead.
+  getCsrfTokenFromRequest: (req) => req.body?._csrf,
 });

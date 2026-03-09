@@ -47,7 +47,7 @@ const sessionOptions: session.SessionOptions = {
   name: "connect.sid", // default cookie name
   secret: process.env.SESSION_SECRET || "default_secret", // should be set in environment variable for production
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // must be true so the session cookie is sent before form submission, keeping the session ID stable for CSRF token validation
   store: new session.MemoryStore(), // In production, use a more robust session store like connect-redis
   cookie: {
     httpOnly: true,
