@@ -9,6 +9,7 @@
     <p>Join the Photo Caption Contest community and start sharing your funniest captions!</p>
 
     <form method="POST" action="/register" class="caption-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
             <label for="userName">Username:</label>
             <input

@@ -32,7 +32,7 @@
 <section class="submit-section">
     <h2>Submit Your Caption</h2>
     <form method="POST" action="/images/<%= image.id %>/captions" class="caption-form">
-        
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
             <label for="text">Your Caption:</label>
             <textarea

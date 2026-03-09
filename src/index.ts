@@ -1,5 +1,6 @@
 import express from "express";
 import session from "express-session";
+import cookieParser from "cookie-parser";
 import path from "path";
 import expressLayouts from "express-ejs-layouts";
 import swaggerUi from "swagger-ui-express";
@@ -10,6 +11,7 @@ import { apiRouter } from "./routes/api";
 import { authRouter } from "./routes/auth";
 import { seedImages } from "./seed";
 import { swaggerSpec } from "./swagger";
+import { generateCsrfToken, doubleCsrfProtection } from "./middleware/csrf";
 
 const app = express(); // creating express app
 const PORT = process.env.PORT || 3000;
@@ -54,6 +56,7 @@ const sessionOptions: session.SessionOptions = {
     sameSite: "strict",
   },
 };
+app.use(cookieParser());
 app.use(session(sessionOptions));
 
 declare module "express-session" {
@@ -70,6 +73,18 @@ app.use((req, res, next) => {
   res.locals.userId = req.session.userId;
   res.locals.userName = req.session.userName;
   next();
+});
+
+// CSRF: validate on state-changing requests and expose token to EJS templates
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/api-docs")) {
+    return next();
+  }
+  doubleCsrfProtection(req, res, (err) => {
+    if (err) return next(err);
+    res.locals.csrfToken = generateCsrfToken(req, res);
+    next();
+  });
 });
 
 // Swagger documentation route

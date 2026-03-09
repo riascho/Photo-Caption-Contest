@@ -22,6 +22,7 @@
                   <span>Hello, <%= userName %>!</span>
                 </div>
                 <form action="/logout" method="POST">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button type="submit" class="btn btn-login">Logout</button>
                 </form>
             <% } else { %>

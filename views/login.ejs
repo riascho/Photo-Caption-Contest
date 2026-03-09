@@ -9,6 +9,7 @@
     <p>Log in to continue sharing your funniest captions.</p>
 
     <form method="POST" action="/login" class="caption-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
             <label for="userName">Username:</label>
             <input
