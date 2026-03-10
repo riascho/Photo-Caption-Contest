@@ -6,8 +6,12 @@ import {
   captionRepository,
 } from "../repositories";
 import { Router } from "express";
-import { validateAndSanitizeCaptionInput } from "../middleware/captionValidation";
 export const apiRouter = Router();
+
+import { validateAndSanitizeCaptionInput } from "../middleware/captionValidation";
+import { apiLimiter } from "../middleware/rateLimiter";
+
+apiRouter.use(apiLimiter);
 
 // API ROUTES
 

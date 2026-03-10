@@ -2,10 +2,10 @@
 
 import { userRepository } from "../repositories";
 import { Router } from "express";
+export const authRouter = Router();
 
 import { compareHash, generateHash } from "../authentication";
-
-export const authRouter = Router();
+import { loginLimiter, registerLimiter } from "../middleware/rateLimiter";
 
 // Authentication Routes
 
@@ -14,7 +14,7 @@ authRouter.get("/register", (_req, res) => {
   res.status(200).render("registration");
 });
 
-authRouter.post("/register", async (req, res) => {
+authRouter.post("/register", registerLimiter, async (req, res) => {
   try {
     const userName = req.body.userName;
     const email = req.body.email;
@@ -43,7 +43,7 @@ authRouter.post("/register", async (req, res) => {
 authRouter.get("/login", async (_req, res) => {
   res.status(200).render("login");
 });
-authRouter.post("/login", async (req, res) => {
+authRouter.post("/login", loginLimiter, async (req, res) => {
   try {
     const { userName, password } = req.body;
     const user = await userRepository.findOne({
