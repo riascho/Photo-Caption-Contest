@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import expressLayouts from "express-ejs-layouts";
 import swaggerUi from "swagger-ui-express";
+import helmet from "helmet";
 import { AppDataSource } from "./data-source";
 import { initializeRepositories } from "./repositories";
 import { viewsRouter } from "./routes/views";
@@ -30,14 +31,23 @@ app.use(express.urlencoded({ extended: true })); // for HTML form submissions
 app.use((req, res, next) => {
   // Keep Swagger UI usable while enforcing CSP everywhere else.
   if (req.path.startsWith("/api-docs")) {
-    return next();
+    return helmet({ contentSecurityPolicy: false })(req, res, next);
   }
 
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
-  );
-  next();
+  return helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "https:", "data:"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        frameAncestors: ["'none'"],
+        formAction: ["'self'"],
+      },
+    },
+  })(req, res, next);
 });
 
 app.use(express.static(path.join(__dirname, "../public"))); // serves static files from the public directory
