@@ -4,8 +4,17 @@ import { userRepository } from "../repositories";
 import { Router } from "express";
 export const authRouter = Router();
 
-import { compareHash, generateHash } from "../authentication";
+import {
+  compareHash,
+  generateHash,
+  validateRegistrationInput,
+} from "../middleware/authentication";
 import { loginLimiter, registerLimiter } from "../middleware/rateLimiter";
+
+// Pre-computed bcrypt hash used as a dummy to prevent user enumeration via timing attacks.
+// Always run compareHash so non-existent users take the same time as existing ones.
+const DUMMY_HASH =
+  "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
 // Authentication Routes
 
@@ -14,7 +23,7 @@ authRouter.get("/register", (_req, res) => {
   res.status(200).render("registration");
 });
 
-authRouter.post("/register", registerLimiter, async (req, res) => {
+authRouter.post("/register", registerLimiter, validateRegistrationInput, async (req, res) => {
   try {
     const userName = req.body.userName;
     const email = req.body.email;
@@ -49,7 +58,13 @@ authRouter.post("/login", loginLimiter, async (req, res) => {
       where: { userName },
       select: ["id", "userName", "password"], // only select fields we need
     });
-    if (user && (await compareHash(password, user?.password))) {
+    // Always run compareHash regardless of whether user exists to prevent
+    // user enumeration via timing attacks.
+    const passwordMatch = await compareHash(
+      password,
+      user ? user.password : DUMMY_HASH,
+    );
+    if (user && passwordMatch) {
       // regenerate and store session
       req.session.regenerate((err) => {
         if (err) {

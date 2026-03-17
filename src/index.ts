@@ -54,7 +54,7 @@ app.use(express.static(path.join(__dirname, "../public"))); // serves static fil
 
 // Session configuration
 const sessionOptions: session.SessionOptions = {
-  name: "connect.sid", // default cookie name
+  name: "connect.sid", // default cookie name for express (change in production)
   secret: process.env.SESSION_SECRET || "default_secret", // should be set in environment variable for production
   resave: false,
   saveUninitialized: true, // must be true so the session cookie is sent before form submission, keeping the session ID stable for CSRF token validation
