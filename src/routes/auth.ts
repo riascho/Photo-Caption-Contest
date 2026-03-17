@@ -51,10 +51,18 @@ authRouter.post("/login", loginLimiter, async (req, res) => {
       select: ["id", "userName", "password"], // only select fields we need
     });
     if (user && (await compareHash(password, user?.password))) {
-      // store session
-      req.session.userId = user.id;
-      req.session.userName = user.userName;
-      res.redirect("/");
+      // regenerate and store session
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error("Error during session regeneration:", err);
+          return res.status(500).render("error", {
+            message: "Login failed. Please refresh the page and try again.",
+          });
+        }
+        req.session.userId = user.id;
+        req.session.userName = user.userName;
+        res.redirect("/");
+      });
     } else {
       res.status(401).render("error", {
         message: "Invalid username or password",
