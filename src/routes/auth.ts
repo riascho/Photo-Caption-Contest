@@ -31,7 +31,6 @@ authRouter.post("/register", registerLimiter, async (req, res) => {
 
     res.redirect("/login");
   } catch (error) {
-    // TODO: handle duplicate email/userName error
     console.error("Error during registration:", error);
     res.status(500).render("error", {
       message: "Registration failed",
